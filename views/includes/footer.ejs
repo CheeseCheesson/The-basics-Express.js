@@ -1,0 +1,19 @@
+<% let year = new Date().getFullYear() %>
+<% let menus = [{ title: 'Главня',
+url: '/' }, { title: 'О нас', url: '/about' }, { title: 'Контакты', url:
+'/contacts' }] %>
+
+<footer class="footer">
+  <div class="footer__container">
+    <div class="nav nav__menu">
+      <ul class="lists">
+        <% menus.forEach((menu) => { %>
+        <li class="list_item">
+          <a href="<%= menu.url %>" class="list-link"><%= menu.title %></a>
+        </li>
+        <% }); %>
+      </ul>
+    </div>
+    <div class="copyright"><%= year %></div>
+  </div>
+</footer>

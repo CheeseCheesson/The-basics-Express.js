@@ -1,0 +1,15 @@
+<% layout('layouts/main') -%> <% let textAbout = "THIS IS ABOUT PAGE" %>
+
+<main class="page__about">
+  <div class="page__container">
+    <p><%- textAbout %></p>
+    <% if(showHeader){ %>
+    <p class="news">
+      Lorem, ipsum dolor sit amet consectetur adipisicing elit. Voluptatem
+      debitis possimus ducimus voluptatibus tenetur ipsum sunt quasi aperiam
+      iste sint neque quibusdam eveniet reprehenderit libero, quae nulla atque
+      deleniti animi.
+    </p>
+    <% } %>
+  </div>
+</main>

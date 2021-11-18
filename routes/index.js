@@ -2,10 +2,10 @@ const express = require("express"),
   router = express.Router();
 
 router.get("/", (req, res) => {
-  console.log(req.query);
-  res.send(
-    `/?myKey = anyValue ------*** ${req.query.myKey} ***---------- получаем (myValue)`
-  );
+  res.render('pages/index.ejs', {title: "Express MongoDB"});
+});
+router.get("/about", (req, res) => {
+  res.render('pages/about.ejs', {title: "About us", showHeader: true});
 });
 
 router.post("/", (req, res) => {
