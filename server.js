@@ -1,9 +1,10 @@
+require('dotenv').config()
 const express = require("express");
 const morgan = require("morgan");
 const path = require("path");
 
 const app = express();
-const PORT = 8088;
+const port = process.env.PORT || 8088;
 
 
 app.engine('ejs', require('ejs-mate')) // layout для шаблона
@@ -12,7 +13,7 @@ app.set('view engine', 'ejs'); // устанавливаем шаблониза�
 
 
 
-app.use(morgan("dev"));
+app.use(morgan(process.env.LOG_LEVEL));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false })); // submit forms 
 
@@ -24,6 +25,6 @@ app.use('/catalog',  require("./routes/catalog"))
 app.use('/user',  require("./routes/user"))
 
 
-app.listen(PORT, () => {
-  console.log(`Server запущен на порту ${PORT}`);
+app.listen(port, () => {
+  console.log(`Server запущен ${process.env.DOMAIN} : ${port}`);
 });

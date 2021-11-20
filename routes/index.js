@@ -1,11 +1,13 @@
 const express = require("express"),
   router = express.Router();
 
+const config = require("../config/config");
+
 router.get("/", (req, res) => {
-  res.render('pages/index.ejs', {title: "Express MongoDB"});
+  res.render('pages/index.ejs', {title:"Home page", siteName: config.siteName});
 });
 router.get("/about", (req, res) => {
-  res.render('pages/about.ejs', {title: "About us", showHeader: true});
+  res.render('pages/about.ejs', {title: "About us", showHeader: true, siteName: config.siteName});
 });
 
 router.post("/", (req, res) => {
