@@ -1,7 +1,10 @@
 <% let year = new Date().getFullYear() %>
-<% let menus = [{ title: 'Главня',
-url: '/' }, { title: 'О нас', url: '/about' }, { title: 'Контакты', url:
-'/contacts' }] %>
+<% let menus = [
+    { title: 'Главня', url: '/' },
+    { title: 'О нас', url: '/about' },
+    { title: 'Пользователи', url: '/user' },
+    { title: 'Контакты', url: '/contacts' }
+] %>
 
 <footer class="footer">
   <div class="footer__container">
@@ -17,3 +20,4 @@ url: '/' }, { title: 'О нас', url: '/about' }, { title: 'Контакты', 
     <div class="copyright"><%= year %></div>
   </div>
 </footer>
+<script src="/js/js.js"></script>

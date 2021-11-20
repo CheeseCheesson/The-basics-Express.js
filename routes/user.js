@@ -1,22 +1,86 @@
 const express = require("express"),
-      router = express.Router()
+  router = express.Router(),
+  { ObjectId } = require("mongodb");
 
-  router
-    .route("/")
-    .get((req, res) => {
-      res.send("get user");
-    })
-    .post((req, res) => {
-      res.send("create user...");
-    })
-    .put((req, res) => {
-      res.send("update user...");
-    })
-    .delete((req, res) => {
-      res.send("delete user...");
+const { Connection } = require("../ext/Connection");
+const config = require("../config/config");
+const collection = "users";
+
+Connection.connectToMongo();
+
+router.route("/").get(async (req, res) => {
+  let content = [];
+
+  try {
+    content = await Connection.db.collection(collection).find({}).toArray();
+  } catch (err) {
+    throw err;
+  }
+
+  res.render("pages/users", {
+    title: "Users",
+    siteName: config.siteName,
+    content,
+  });
+});
+
+router
+  .route("/:id")
+  .get(async (req, res) => {
+    const id = req.params.id;
+
+    let content = {
+      firstName: "",
+      lastName: "",
+      email: "",
+      phone: "",
+      _id: id,
+    };
+    if (id !== "create") {
+      try {
+        content = await Connection.db
+          .collection(collection)
+          .findOne({ _id: ObjectId(id) });
+      } catch (err) {
+        throw err;
+      }
+    }
+
+    res.render("pages/user", {
+      title: "Users",
+      siteName: config.siteName,
+      content,
     });
+  })
+  .post((req, res) => {
+    Connection.db.collection(collection).insertOne(req.body, (err, result) => {
+      if (err) {
+        throw err;
+      }
+      res.redirect("/user");
+    });
+  })
+  .put((req, res) => {
 
+    const id = req.params.id;
+    Connection.db.collection(collection).findOneAndReplace({ _id: ObjectId(id) },req.body, (err, result) => {
+      if (err) {
+        throw err;
+      }
+      res.json({message: 'updated'})
+    });
+  })
+  .delete((req, res) => {
+    const id = req.params.id
+    Connection.db.collection(collection)
+		.deleteOne({_id: ObjectId(id)}, (err, result) => {
+			if(err){
+				throw err
+			}
+			res.json({message: 'deleted'})
+	})
+  });
 
-module.exports = router
+module.exports = router;
 
-// отправляется в server и монтируется в app.use('/', require("./user")) 
+// отправляется в server и монтируется в app.use('/', require("./user"))

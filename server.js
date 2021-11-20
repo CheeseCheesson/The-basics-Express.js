@@ -2,7 +2,7 @@ require('dotenv').config()
 const express = require("express");
 const morgan = require("morgan");
 const path = require("path");
-
+const mongoSanitize = require('express-mongo-sanitize');
 const app = express();
 const port = process.env.PORT || 8088;
 
@@ -12,7 +12,7 @@ app.set('views', path.join(__dirname, 'views')); // папка с шаблони
 app.set('view engine', 'ejs'); // устанавливаем шаблонизатор чтобы им пользоваться без requer
 
 
-
+app.use(mongoSanitize());
 app.use(morgan(process.env.LOG_LEVEL));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false })); // submit forms 
