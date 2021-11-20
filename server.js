@@ -25,6 +25,11 @@ app.use('/catalog',  require("./routes/catalog"))
 app.use('/user',  require("./routes/user"))
 
 
+
+app.use(function(err, req, res, next) {
+  res.status(500).send('Something went wrong')
+})
+
 app.listen(port, () => {
   console.log(`Server запущен ${process.env.DOMAIN} : ${port}`);
 });

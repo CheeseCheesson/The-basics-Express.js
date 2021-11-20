@@ -1,20 +1,18 @@
 const express = require("express"),
-  router = express.Router(),
-  { ObjectId } = require("mongodb");
-
-const { Connection } = require("../ext/Connection");
+  router = express.Router();
 const config = require("../config/config");
-const collection = "users";
 
-Connection.connectToMongo();
+const User = require("../models/User");
 
-router.route("/").get(async (req, res) => {
+// Connection.connectToMongo()
+
+router.route("/").get(async (req, res, next) => {
   let content = [];
 
   try {
-    content = await Connection.db.collection(collection).find({}).toArray();
+    content = await User.find({});
   } catch (err) {
-    throw err;
+    throw next(err);
   }
 
   res.render("pages/users", {
@@ -26,7 +24,7 @@ router.route("/").get(async (req, res) => {
 
 router
   .route("/:id")
-  .get(async (req, res) => {
+  .get(async (req, res, next) => {
     const id = req.params.id;
 
     let content = {
@@ -38,11 +36,10 @@ router
     };
     if (id !== "create") {
       try {
-        content = await Connection.db
-          .collection(collection)
-          .findOne({ _id: ObjectId(id) });
+        content = await User.findById(id).exec();
+        // let userUpper = await content.getNameInUpperCase()
       } catch (err) {
-        throw err;
+        throw next(err);
       }
     }
 
@@ -52,33 +49,32 @@ router
       content,
     });
   })
-  .post((req, res) => {
-    Connection.db.collection(collection).insertOne(req.body, (err, result) => {
+  .post((req, res, next) => {
+    let user = new User(req.body);
+
+    user.save(req.body, (err, result) => {
       if (err) {
-        throw err;
+        throw next(err);
       }
       res.redirect("/user");
     });
   })
   .put((req, res) => {
-
-    const id = req.params.id;
-    Connection.db.collection(collection).findOneAndReplace({ _id: ObjectId(id) },req.body, (err, result) => {
+    User.findByIdAndUpdate(req.params.id, req.body, {runValidators: true}, (err, result) => {
       if (err) {
-        throw err;
+        return res.status(400).json({message: 'err.message'})
       }
-      res.json({message: 'updated'})
+      res.json({ message: "updated" });
     });
   })
   .delete((req, res) => {
-    const id = req.params.id
-    Connection.db.collection(collection)
-		.deleteOne({_id: ObjectId(id)}, (err, result) => {
-			if(err){
-				throw err
-			}
-			res.json({message: 'deleted'})
-	})
+
+    User.findByIdAndRemove( req.params.id, (err, result) => {
+        if (err) {
+          return res.status(400).json({message: 'err.message'})
+        }
+        res.json({ message: "deleted" });
+      });
   });
 
 module.exports = router;
